@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/JeffGrant274/team-profile-generator#readme",
   "dependencies": {
+    "chalk": "^4.1.1",
+    "figlet": "^1.5.0",
     "inquirer": "^8.1.1"
   }
 }
