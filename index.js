@@ -3,9 +3,10 @@ const Engineer = require("./lib/engineer");
 const Intern = require("./lib/intern");
 const fs = require("fs");
 const inquirer = require("inquirer");
-const genFilePath = "./dist/profile.html";
+const genFilePath = require("./dist/profile.html");
 const figlet = require("figlet");
 const chalk = require("chalk");
+const { get } = require("http");
 const log = console.log;
 
 let staff = [];
@@ -131,7 +132,7 @@ function addEngineer() {
       {
         type: "input",
         message: "Please enter their Github username",
-        name: "enginnerGitHub",
+        name: "engineerGitHub",
       },
       {
         type: "list",
@@ -145,7 +146,7 @@ function addEngineer() {
         answers.engineerName,
         answers.engineerId,
         answers.engineerEmail,
-        answers.internSchool
+        answers.engineerGitHub
       );
       staff.push(engineer);
       if (answers.moreStaff === "Intern") {
@@ -158,6 +159,62 @@ function addEngineer() {
     });
 }
 
+function genStartHtml()
+{
+  return `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  
+  
+      <title>Team Profile</title>
+      <link rel="stylesheet" href ="./profile.css">
+  </head>
+  <body>
+      <div class="head">
+      <h1>Team Profile</h1>
+      </div>
+      <div class = "page-box">`
+}
+
+
+function staffHtml (staff)
+{
+return `
+<div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">${staff.getName()}</h5>
+          <p class="card-text">${staff.getRole()}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Employee Id:${staff.getId()}</li>
+          <li class="list-group-item">Email Address:${staff.getEmail()}</li>
+          <li class="list-group-item">Office Number:</li>
+        </ul>
+      </div>
+`
+}
+
+
+function genFinalHtml()
+{
+  ` </div>  
+
+  </body>
+  </html`
+}
+
 function EndofPrompts() {
-  fs.writeFileSync(genFilePath, "");
+fs.writeFileSync(genFilePath,"")
+  let data = genStartHtml()
+
+for (var a in staff)
+{
+  data +=staffHtml(staff[a]);
+}
+data +=genFinalHtml();
+fs.writeFilySync(genFinalHtml,data)
 }
