@@ -3,10 +3,9 @@ const Engineer = require("./lib/engineer");
 const Intern = require("./lib/intern");
 const fs = require("fs");
 const inquirer = require("inquirer");
-const genFilePath = require("./dist/profile.html");
+const genFilePath = "./dist/profile.html";
 const figlet = require("figlet");
 const chalk = require("chalk");
-const { get } = require("http");
 const log = console.log;
 
 let staff = [];
@@ -159,8 +158,7 @@ function addEngineer() {
     });
 }
 
-function genStartHtml()
-{
+function genStartHtml() {
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -177,13 +175,21 @@ function genStartHtml()
       <div class="head">
       <h1>Team Profile</h1>
       </div>
-      <div class = "page-box">`
+      <div class = "page-box">`;
 }
 
+function specInfo(staff) {
+  if (staff.getRole() === "Manager") {
+    return ` <li class = "list-group-item">Office Number: ${staff.getOffNum()}</li>`;
+  } else if (staff.getRole() === "Intern") {
+    return `<li class = "list-group-item">School: ${staff.getSchool()} </li>`;
+  } else {
+    return ` <li class = "list-group-item">GitHub: ${staff.getGithub()}</li>`;
+  }
+}
 
-function staffHtml (staff)
-{
-return `
+function staffHtml(staff) {
+  return `
 <div class="card" style="width: 18rem;">
         <div class="card-body">
           <h5 class="card-title">${staff.getName()}</h5>
@@ -191,30 +197,27 @@ return `
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">Employee Id:${staff.getId()}</li>
-          <li class="list-group-item">Email Address:${staff.getEmail()}</li>
-          <li class="list-group-item">Office Number:</li>
+          <li class="list-group-item">Email Address: <a href = "mailto:${staff.getEmail()}">${staff.getEmail()}</li>
+          ${specInfo()}
         </ul>
       </div>
-`
+`;
 }
 
-
-function genFinalHtml()
-{
+function genFinalHtml() {
   ` </div>  
 
   </body>
-  </html`
+  </html`;
 }
 
 function EndofPrompts() {
-fs.writeFileSync(genFilePath,"")
-  let data = genStartHtml()
+  fs.writeFileSync(genFilePath, "");
+  let markupData = genStartHtml();
 
-for (var a in staff)
-{
-  data +=staffHtml(staff[a]);
-}
-data +=genFinalHtml();
-fs.writeFilySync(genFinalHtml,data)
+  for (var a in staff) {
+    markupData += staffHtml(staff[a]);
+  }
+  markupData += genFinalHtml();
+  fs.writeFileSync(genFilePath, markupData);
 }
